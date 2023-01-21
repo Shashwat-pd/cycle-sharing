@@ -1,0 +1,168 @@
+
+{% extends 'base.html' %}
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static '/css/add_cycle.css' %}" rel="stylesheet">
+    <link href="{% static '/css/home.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <link href='https://fonts.googleapis.com/css?family=Suez+One' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Rammetto+One' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Blinker' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Artifika' rel='stylesheet'>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+    <script src="{% static '/javascript/add_cycle.js' %}" defer></script> {% endcomment %}
+
+
+
+
+
+
+
+
+
+  {% block title %}Cycle Enlist || GearGO{% endblock title %} 
+</head>
+
+{% block style %}
+<style>
+  #map { height: 180px; width:75%; margin:2%; margin-left: 12.5%; margin-right: 12.5%;}
+</style>
+{% endblock style %}
+
+{% block content %}
+
+
+<div class="settings-container" style="padding-top: 75px;">
+  <h3>Add New Cycle</h3>
+    <form method = "post" class="general-container" enctype="multipart/form-data">{% csrf_token %}
+      <div class="general-form-container">
+        <div class="text-inputs">
+          <div class="field-container">
+            <div class="headings">Company Name</div>
+
+            <div class="divider"></div>
+
+            <div class="fields">
+              <div class="text-input-container"><i class="fas fa-bicycle fa-xs"></i>
+                <input type="text" placeholder="Company Name..." class="text-input" id="company_name" onkeyup="validateName(0)" name="name">
+               
+              </div>
+            </div>
+          </div>
+
+          <div class="field-container">
+            <div class="headings">Bike Type</div>
+
+            <div class="divider"></div>
+
+            <div class="fields">
+              <div class="text-input-container">
+                <i class="fas fa-bicycle fa-xs"></i>
+                <select class="form-control dropdown-input" id="bike_type" onkeyup="validateCategory()" name="description">
+                  <option disabled selected value="biketype">Select Your Bike Type ?</option>
+                  <option value="Mountain Bike">Mountain Bikes</option>
+                  <option value="Road Bike">Road Bikes</option>
+                  <option value="Electric Bike">Electric Bicycles</option>
+                  <option value="Single Gear">Single Gear</option>
+                  <option value="Multi Gear">Multi Gear</option>
+              </select>
+                
+              </div>
+            </div>
+          </div>
+
+          <div class="field-container">
+            <div class="headings">Price</div>
+
+            <div class="divider"></div>
+
+            <div class="fields">
+              <div class="text-input-container">
+                <i class="fas fa-money-bill fa-xs"></i>
+                <input type="text" placeholder="Rate (/hr)" class="text-input" id="rate" onkeyup="validatePrice(2)" name="price">
+                
+              </div>
+            </div>
+          </div>
+
+          <div class="field-container">
+            <div class="headings">Bike Availablity</div>
+
+            <div class="divider"></div>
+
+            <div class="fields">
+              <div class="text-input-container">
+                <i class="fas fa-person-biking fa-xs"></i>
+                <select class="form-control dropdown-input" id="availablity" onkeyup="validateAvailablity()">
+                  <option disabled selected value="availablity">Select Your Bike Availablity ?</option>
+                  <option value="Single Day">Single Day</option>
+                  <option value="Multiple Day">Multiple Days</option>
+              </select>
+
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      <div class="image-inputs">
+        <div class="picture">
+          <div class="no-image">
+            <img id="ItemPreview">
+          </div>
+
+          <div class="upload">
+            <input type="file" class="input-img" id="image" name = "image" onchange="addImages()">
+            <label for="image"><i class="fas fa-upload"></i>Upload</label>
+            <button type="button" class="remove"><i class="fas fa-trash"></i>Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="field-container" style="justify-content:center;">
+      <div class="headings" style="font-size:20px">Location of cycle</div>
+    </div>
+    <div class="map-container" style="position:sticky;">
+    <div id="map"></div>
+    </div>
+      <input type="hidden" name="latitude" id="latitude" value="">
+      <input type="hidden" name="longitude" id="longitude" value="">
+
+      <div class="submit-div">
+              <button class="submit" type="submit" style="margin-bottom:40px;">Add Cycle</button>
+      </div>
+
+    </form>
+
+
+ 
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+  var map = L.map('map');
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+      maxZoom: 18
+  }).addTo(map);
+  navigator.geolocation.getCurrentPosition(function(position) {
+      var lat = position.coords.latitude;
+      var lng = position.coords.longitude;
+
+      var marker = L.marker([lat, lng], {draggable: true}).addTo(map);
+      map.setView([lat, lng], 13);
+      marker.on('dragend', function(e) {
+          document.getElementById("latitude").value = e.target._latlng.lat;
+          document.getElementById("longitude").value = e.target._latlng.lng;
+      });
+  });
+</script>
+{% endblock script %}

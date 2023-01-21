@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %}</title>
+
+    {% load static %}
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    
+    <link href="{% static '/css/add_cycle.css' %}" rel="stylesheet">
+    <link href="{% static '/css/home.css' %}" rel="stylesheet">
+    <link href="{% static '/css/header.css' %}" rel="stylesheet">
+    <link href="{% static '/css/footer.css' %}" rel="stylesheet">
+    <link href="{% static '/css/rental_home.css' %}" rel="stylesheet">
+
+    <script src="{% static '/javascript/add_cycle.js' %}" defer></script>
+    <script src="{% static '/javascript/add_cycle.js' %}"></script>
+    <script src="{% static '/javascript/home.js' %}"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Suez+One' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Rammetto+One' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Blinker' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Artifika' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Fjord+One' rel='stylesheet'>
+
+    {% block style %}{% endblock style %}
+
+</head>
+<body>
+    <header>
+        <div class="head">
+            <!-- Logo Division -->
+            <div class="logo-div" style="flex: 1.5;">
+            <img src="{% static '/images/logo.png' %}" alt="Logo" class="logo">
+            </div>
+        
+            <!-- Search Division -->
+            <ul class="navbar">
+                <li><a href="{% url "home" %}">Home</a></li>
+                <li><a href="{% url "orders" %}">Orders</a></li>
+                <li><a href="{% url "rental_home" %}">Rental</a></li>
+                <li><a href="{% url "add_cycle" %}">Add Cycles</a></li>
+
+            </ul>
+        
+            <!-- Profile Picture Division -->
+            <div class="profile">
+            <div class = left-align-profile>
+                <div class="profile-div">
+                  
+                <a href="#" class="profile-link"><span >Hi, {{user.username}}</span></a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </header>
+
+    {% block content %}
+
+    {% endblock content %}
+
+    {% block script %}{% endblock script %}
+
+    <footer>
+      <div class="footer" style="position: fixed;
+      bottom: 0;
+      width: 100%;">
+        <div class="upper-part">
+          <div class="copyright">
+            <div class = "logo">
+            </div>
+            <div class="text">
+              © Copyright 2023 - Designed and Developed by <b>BroCode</b>.
+            </div>
+        
+          </div>
+        </div>
+        </footer>
+</body>
+</html>	

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %} Cycle Enlist || GearGO {% endblock title %}
+
+{% block style %}<style>
+  #map { height: 180px; width:100%; }
+</style>
+{% endblock style %}
+
+{% block content %}
+<div class="settings-container" style="padding-top: 75px;">
+  <h3>Book Your Cycle</h3>
+    <form method = "post" class="general-container" action="{% url 'request_cycle' %}">{% csrf_token %}
+      <div class="general-form-container" style="flex-direction:column;">
+        <div class="text-inputs">
+          <div class="field-container">
+            <div class="headings">Company Name</div>
+
+            <div class="divider"></div>
+
+            <div class="fields">
+              <input type="hidden" name="cycle_id" value="{{cycle.id}}">
+              <div class="text-input-container"><i class="fas fa-bicycle fa-xs"></i>
+                <input type="text" class="text-input" id="name" name="name"  value="{{cycle.name}}" disabled>
+               
+              </div>
+            </div>
+          </div>
+
+          <div class="field-container">
+            <div class="headings">Bike Type</div>
+
+            <div class="divider"></div>
+
+            <div class="fields">
+              <div class="text-input-container">
+                <i class="fas fa-bicycle fa-xs"></i>
+                <input type="text" class="text-input" id="company_name" name="type" value={{cycle.description}} disabled>
+                
+                
+              </div>
+            </div>
+          </div>
+
+          <div class="field-container">
+            <div class="headings">Rate</div>
+
+            <div class="divider"></div>
+
+            <div class="fields">
+              <div class="text-input-container">
+                <i class="fas fa-money-bill fa-xs"></i>
+                <input type="text" class="text-input" id="rate" name="price" value="Rs. {{cycle.rate}}/hr" disabled>
+                
+              </div>
+            </div>
+          </div>
+
+          <div class="field-container">
+            <div class="headings">Estimated Time</div>
+
+            <div class="divider"></div>
+
+            <div class="fields">
+              <div class="text-input-container">
+                <i class="fas fa-person-biking fa-xs"></i>
+                <input type="number" class="text-input" id="time" name="time" placeholder="Enter in Hour">
+                
+
+                </div>
+            
+            </div>
+            </div>
+
+          <div class="field-container">
+            <div class="headings">Estimated Cost</div>
+
+            <div class="divider"></div>
+
+            <div class="fields">
+              <div class="text-input-container">
+                <i class="fas fa-person-biking fa-xs"></i>
+                <input type="text" class="text-input" id="cost" name="cost" value="" disabled>
+                
+
+                </div>
+            
+            </div>
+            </div>
+          <div class="field-container">
+            <div class="headings"> Destination</div>
+            <div class="divider"></div>
+            <div class="fields">
+                <div class="text-input-container" style="position:sticky;">
+                    <div id="map"></div>
+                </div>
+            </div>
+          </div>
+    </div>
+
+      <input type="hidden" name="latitude" id="latitude" value="">
+      <input type="hidden" name="longitude" id="longitude" value="">
+<div></div>
+      <div class="submit-div">
+              <button class="submit" type="submit" style="margin-bottom:45px;">Confirm Booking</button>
+      </div>
+
+    </form>
+
+
+ 
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+  var map = L.map('map');
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+      maxZoom: 18
+  }).addTo(map);
+
+  var lat = {{cycle_lat}};
+  var lng = {{cycle_long}};
+var marker = L.marker([lat, lng], {draggable: false}).addTo(map);
+map.setView([lat, lng], 13);
+
+
+
+  var marker1 = L.marker([lat, lng], {draggable: true}).addTo(map);
+  marker1.on('dragend', function(e) {
+    document.getElementById("latitude").value = e.target._latlng.lat;
+    document.getElementById("longitude").value = e.target._latlng.lng;
+});
+
+</script>
+<script>
+  var rate = parseInt({{cycle.rate}});
+  var time = document.getElementById("time");
+  var cost = document.getElementById("cost");
+  time.addEventListener("input", function(){
+    cost.value = rate * time.value;
+  });
+</script>
+{% endblock script %}

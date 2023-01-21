@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+
+{% block title %}Document{% endblock title %} 
+ 
+{% block style %}
+  <style>
+    body{
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+      .product-page {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        
+        .product-container {
+          max-width: 600px;
+          min-width: 140px;
+          justify-content: space-between;
+          margin: 20px;
+          width: 100%;
+        }
+        
+        .product-info {
+          display: flex;
+          gap: 35px;
+          flex-basis: calc(50% - 10px);
+          margin: 10px;
+          padding: 20px;
+          background-color: #ddebf7;
+          border-radius: 15px;
+        }
+        
+        img {
+          width: 100%;
+          max-width: 200px;
+          border-radius: 10px;
+          background-color: #070707;
+          padding-top: 5px;
+        }
+        
+        .basic-info {
+          margin-left: 20px;
+        }
+        .toggle-button{
+          align-self: center;
+          
+      color: #ffff;
+      background-color: #060606;
+      font-family: Artifika, serif;
+      width: 100px;
+      height: 30px;
+      border-radius: 8px;
+      font-weight: 800;
+  
+  
+      }
+      h3{
+          font-size: 18px;
+          
+      }
+      p{
+          
+      font-size: 15px;
+      font-weight: bold;
+  
+      }
+        @media screen and (max-width: 768px) {
+          .product-info {
+            flex-basis: 100%;
+          }
+      
+        }
+  
+       
+  
+        @media screen and (max-width:992px) {
+          .product-info{
+              flex-direction: column;
+              gap:15px;
+          }
+          img{
+              align-self: center;l
+          }
+          .toggle-button{
+              align-self: center;
+              margin:0px;
+          }
+          .basic-info{
+              align-self: center;
+          }
+        }
+        
+  
+  </style>
+  <style>
+          /* Add styles for the popup and blurry background */
+          #popup {
+            display: none; /* Hide the popup by default */
+            position: fixed; /* Position the popup in the center of the screen */
+            z-index: 1; /* Ensure the popup is on top of other elements */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+          }
+        
+          .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Width of the popup */
+          }
+        
+          /* Add styles for the "x" close button */
+          .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+          }
+        
+          .close:hover,
+          .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+          }
+        
+          /* Add styles for the body to make it blurry when the popup is visible */
+          .display-items.blurred {
+            filter: blur(2px);
+          }
+  
+          .active-modal{
+              filter: blur(4px);
+          }
+  
+          h3{
+              text-align: center;
+          }
+  </style>
+  {% endblock style %}
+
+{% block content %}
+      <div class="middle" style="display: contents;">
+          
+          <div class="display-items">
+              
+      <div class="items-container">
+          <div class="topic">
+              <h3>Your current Request</h3>
+          </div>
+          <div class="product-page">
+
+          
+
+
+          <div class="product-container">
+            <div class="product-info">
+              <img src="{{cycle_request.cycle.image.url}}" alt="Product 1 Image">
+              <div class="basic-info">
+                <h3>{{cycle_request.cycle.name}}</h3>
+                <h4>{{cycle_request.cycle.description}}</h4>
+                <p>Price : Rs.{{cycle_request.estimated_price}}</p>
+
+              </div>
+              <button class="toggle-button"><a href="{% url 'cancel_request' cycle_request.id %}">Cancel</a></button>
+            </div>
+            </div>          
+        </div>      
+      </div>
+  
+      {% if ongoing_order|length > 1 %}
+      <div class="items-container">
+          <div class="topic">
+              <h3>Ongoing Order</h3>
+          </div>
+          <div class="product-page">
+          <div class="product-container">
+            <div class="product-info">
+              <img src="{{ongoing_order.cycle.image.url}}" alt="Product Image">
+              <div class="basic-info">
+                <h3>{{ongoing_order.cycle.name}}</h3>
+                <h4>Status: {{order.status}}</h4>
+                <p>{{ongoing_order.id}}</p>
+              </div>
+              <button class="toggle-button"><a href="{% url 'complete_order' ongoing_order.id %}">Finish Rider</a></button>
+              <button class="toggle-button"><a href="{% url 'cancel_order' ongoing_order.id %}">Cancel Order</a></button>
+          </div>
+        </div>
+        </div>
+        
+        {% else %}
+        <div class="items-container">
+            <div class="topic">
+                <h3>No Orders</h3>
+            </div>
+          </div>
+        {% endif %}
+          
+          
+        </div>
+        
+      
+      </div>
+  
+      
+          </div>
+      </div>
+      {% endblock content %}
+      {% block script %}
+  
+        <script>
+          // Add JavaScript to show and hide the popup
+          function showPopup() {
+            document.getElementById("popup").style.display = "block";
+            document.getElementsByClassName("display-items").style.filter = "blur(4px)";
+            
+  
+          }
+        
+          function hidePopup() {
+            document.getElementById("popup").style.display = "none";
+            
+            document.getElementsByClassName("display-items").style.filter = "blur(0px)";
+  
+          }
+
+          function change_availability(){
+            document.getElementById("available").innerHTML = "Not Available";
+          }
+
+          
+
+        </script>
+
+        <script>
+          var map = L.map('map');
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+              maxZoom: 18
+          }).addTo(map);
+          navigator.geolocation.getCurrentPosition(function(position) {
+              var lat = position.coords.latitude;
+              var lng = position.coords.longitude;
+        
+              var marker = L.marker([lat, lng], {draggable: true}).addTo(map);
+              map.setView([lat, lng], 13);
+              marker.on('dragend', function(e) {
+                  document.getElementById("latitude").value = e.target._latlng.lat;
+                  document.getElementById("longitude").value = e.target._latlng.lng;
+              });
+          });
+        </script>
+        {% endblock script %}
+
+  

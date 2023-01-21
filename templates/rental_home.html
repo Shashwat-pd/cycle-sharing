@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+
+{% block title %}Document{% endblock title %} 
+ 
+{% block style %}
+  <style>
+    body{
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+      .product-page {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        
+        .product-container {
+          max-width: 600px;
+          min-width: 140px;
+          justify-content: space-between;
+          margin: 20px;
+          width: 100%;
+        }
+        
+        .product-info {
+          display: flex;
+          gap: 35px;
+          flex-basis: calc(50% - 10px);
+          margin: 10px;
+          padding: 20px;
+          background-color: #ddebf7;
+          border-radius: 15px;
+        }
+        
+        img {
+          width: 100%;
+          max-width: 200px;
+          max-height: 125px;
+          border-radius: 10px;
+          background-color: #070707;
+          padding-top: 5px;
+        }
+        
+        .basic-info {
+          margin-left: 20px;
+        }
+        .toggle-button{
+          align-self: center;
+          
+      color: #ffff;
+      background-color: #060606;
+      font-family: Artifika, serif;
+      width: 100px;
+      height: 30px;
+      border-radius: 8px;
+      font-weight: 800;
+      margin-top:15px;
+  
+  
+      }
+      h3{
+          font-size: 18px;
+          
+      }
+      p{
+          
+      font-size: 15px;
+      font-weight: bold;
+  
+      }
+        @media screen and (max-width: 768px) {
+          .product-info {
+            flex-basis: 100%;
+          }
+      
+        }
+  
+       
+  
+        @media screen and (max-width:992px) {
+          .product-info{
+              flex-direction: column;
+              gap:15px;
+          }
+          img{
+              align-self: center;l
+          }
+          .toggle-button{
+              align-self: center;
+              margin:0px;
+          }
+          .basic-info{
+              align-self: center;
+          }
+        }
+        
+  
+  </style>
+  <style>
+    p{
+      margin-top:0px;
+    }
+    a{
+      color:#ffff;
+    }
+          /* Add styles for the popup and blurry background */
+          #popup {
+            display: none; /* Hide the popup by default */
+            position: fixed; /* Position the popup in the center of the screen */
+            z-index: 1; /* Ensure the popup is on top of other elements */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+          }
+        
+          .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Width of the popup */
+          }
+        
+          /* Add styles for the "x" close button */
+          .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+          }
+        
+          .close:hover,
+          .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+          }
+        
+          /* Add styles for the body to make it blurry when the popup is visible */
+          .display-items.blurred {
+            filter: blur(2px);
+          }
+  
+          .active-modal{
+              filter: blur(4px);
+          }
+  
+          h3{
+              text-align: center;
+          }
+  </style>
+  {% endblock style %}
+
+{% block content %}
+      <div class="middle" style="display: contents;">
+             
+          <div class="display-items">
+              
+      <div class="items-container">
+          <div class="topic">
+              <h3>Asked For Rentals</h3>
+          </div>
+          <div class="product-page">
+
+          {% for item in requests %}
+          <div class="product-container">
+            <div class="product-info">
+              
+              <img src="{{item.cycle.image.url}}" alt="Product 1 Image">
+              
+              <div class="basic-info" style="min-width:150px;">
+                <p>{{item.cycle.name}}</p>
+                <p>Ordered By :  {{item.user.name}}</p>
+                <p>Price : Rs.{{item.estimated_price}}</p>
+                <p>Estimated Time : {{item.estimated_time}}</p>
+                
+
+              </div>
+
+              <div class="buttons" style="width:110px;">
+              <button class="toggle-button"><a href={% url 'accept_request' item.id %}>Accept</a></button>
+              <button class="toggle-button "><a href={% url 'deny_request' item.id %}>Deny</a></button>
+              </div>
+              
+            </div>
+            </div> 
+            {% endfor %}         
+        </div>      
+      </div>
+  
+  
+      <div class="items-container">
+          <div class="topic">
+              <h3>Your Cycles</h3>
+          </div>
+          <div class="product-page">
+            {% for item in cycles %}
+          <div class="product-container">
+            <div class="product-info">
+              <img src="{{item.image.url}}" alt="Product Image">
+              <div class="basic-info">
+                <h3>{{item.name}}</h3>
+                <h4>Available: {{item.available}}</h4>
+                <p></p>
+              </div>
+              <button class="toggle-button"><a href={% url 'change_availability' item.id %}>Change</a></button>
+              <button class="toggle-button"><a href={% url 'delete_cycle' item.id %}>Remove</a></button>
+          </div>
+        </div>
+            {% endfor %}
+            
+          
+          
+        </div>
+        
+      
+      </div>
+  
+      
+          </div>
+      </div>
+      {% endblock content %}
+      {% block script %}
+  
+        <script>
+          var map = L.map('map').setView([51.505, -0.09], 13);
+          L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+        var marker = L.marker([51.5, -0.09]).addTo(map);
+
+          const popupbtns = document.querySelectorAll('.popupbtn');
+          const popup = document.querySelector('.popup');
+          const popupContent = document.querySelector(".modal-content");
+
+                      // popup
+
+          // get project item popup info
+
+          popupbtns.forEach(btn => btn.addEventListener('click', () => {
+          const popupinfo = btn.parentNode.childNodes[1];
+              popupContent.querySelector("#askedBy").textContent = popupinfo.children[0].textContent //project image
+              popupContent.querySelector("#estimatedPrice").textContent = popupinfo.children[1].textContent; // project title
+              popupContent.querySelector("#estimatedHour").textContent  =  popupinfo.children[2].textContent; 
+              popupContent.querySelector("#cycleid").textContent  =  popupinfo.children[3].textContent; 
+              document.getElementById("popup").style.display = "block";
+            document.getElementsByClassName("display-items").style.filter = "blur(4px)";
+          }));
+
+
+          // Add JavaScript to show and hide the popup
+          function showPopup() {
+            
+            const popupbtns = document.querySelectorAll('.popupbtn');
+          const popup = document.querySelector('.popup');
+          const popupContent = document.querySelector(".modal-content");
+          const popupinfo = document.getElementByClassName('.popupbtn').parentNode.childNodes[1];
+              popupContent.querySelector("#askedBy").textContent = popupinfo.children[0].textContent //project image
+              popupContent.querySelector("#estimatedPrice").textContent = popupinfo.children[1].textContent; // project title
+              popupContent.querySelector("#estimatedHour").textContent  =  popupinfo.children[2].textContent; 
+              popupContent.querySelector("#cycleid").textContent  =  popupinfo.children[3].textContent; 
+              document.getElementById("popup").style.display = "block";
+            document.getElementsByClassName("display-items").style.filter = "blur(4px)";
+
+
+            document.getElementById("popup").style.display = "block";
+            document.getElementsByClassName("display-items").style.filter = "blur(4px)";
+            
+  
+          }
+        
+          function hidePopup() {
+            document.getElementById("popup").style.display = "none";
+            
+            document.getElementsByClassName("display-items").style.filter = "blur(0px)";
+  
+          }
+
+          function change_availability(){
+            document.getElementById("available").innerHTML = "Not Available";
+          }
+
+          
+
+        </script>
+
+        <script>
+          var map = L.map('map');
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+              maxZoom: 18
+          }).addTo(map);
+          navigator.geolocation.getCurrentPosition(function(position) {
+              var lat = position.coords.latitude;
+              var lng = position.coords.longitude;
+        
+              var marker = L.marker([lat, lng], {draggable: true}).addTo(map);
+              map.setView([lat, lng], 13);
+              marker.on('dragend', function(e) {
+                  document.getElementById("latitude").value = e.target._latlng.lat;
+                  document.getElementById("longitude").value = e.target._latlng.lng;
+              });
+          });
+        </script>
+        {% endblock script %}
+
+  

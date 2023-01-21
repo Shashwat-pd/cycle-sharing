@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Book</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+  </head>
+  <body>
+    <form id="location-form">
+        <div id="map" style="height: 300px;"></div>
+        <input type="hidden" id="latitude" name="latitude">
+        <input type="hidden" id="longitude" name="longitude">
+        <input type="submit" value="Submit">
+    </form>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script>
+        var map = L.map('map');
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 18
+        }).addTo(map);
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+
+            var marker = L.marker([lat, lng], {draggable: true}).addTo(map);
+            map.setView([lat, lng], 13);
+            marker.on('dragend', function(e) {
+                document.getElementById("latitude").value = e.target._latlng.lat;
+                document.getElementById("longitude").value = e.target._latlng.lng;
+            });
+        });
+        document.getElementById("location-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var formData = new FormData(document.getElementById("location-form"));
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/submit_request/", true);
+            xhr.onload = function() {
+                console.log(xhr.responseText);
+            };
+            xhr.send(formData);
+        });
+    </script>
+     
+  </body>
+</html>

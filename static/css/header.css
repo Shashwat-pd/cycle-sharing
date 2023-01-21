@@ -1,0 +1,92 @@
+.head{
+    background-color: #f17300;
+    position: fixed;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.head .logo-div .logo, .head-login .logo-div .logo {
+    height: 60px;
+    padding-left: 18px;
+    mix-blend-mode: lighten;
+}
+
+/* ======================================================== */
+
+
+
+
+/* ======================================================== */
+
+/*1. iii.*/
+.head .profile{
+    align-items: center;
+    justify-content: center;
+    flex: 1.5;
+    padding-right: 2%;
+}
+
+.head .profile .left-align-profile{
+    float: right;
+    width: 140px;
+}
+
+.head .profile .profile-div{
+    width: 115px;
+    display: flex;
+    transition: all 175ms ease-in-out;
+    align-items: center;
+    cursor: pointer;
+    background-color: transparent;
+    border-style: none;
+    padding-left: 15px;
+    padding-top: 8px;
+    /* float: right; */
+}
+
+
+
+
+
+
+
+
+
+
+
+.head{
+    background-color: #f17300;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 4;
+}
+
+.head .navbar {
+    display: flex;
+    flex: 1.7;
+}
+
+.head .navbar a{
+    text-decoration: none;
+    font-family: Blinker, serif;
+    position: relative;
+    padding: 10px 20px;
+    color: white;
+}
+
+.head .navbar li {
+    list-style: none;
+    position: relative;
+}
